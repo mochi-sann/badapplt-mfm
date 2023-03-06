@@ -17,4 +17,4 @@ if [ ! -d "$OUTPUT_DIR" ]; then
 fi
 
 # 画像を半分にする
-mogrify -path "$OUTPUT_DIR" -resize 9% "$IMAGES_DIR/*.$IMAGE_EXT"
+mogrify -path "$OUTPUT_DIR" -resize 5% "$IMAGES_DIR/*.$IMAGE_EXT"

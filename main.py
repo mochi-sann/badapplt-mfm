@@ -37,11 +37,13 @@ def extract_numbers(string):
 
 
 def extract_color(string):
-    match = re.search(r"fg\.color=(\w{6})", string)
-    if match:
-        return match.group(1)
-    else:
-        return None
+
+    # match = re.search(r"fg\.color=(\w{6})", string)
+    # if match:
+    #     return match.group(1)
+    # else:
+    #     return None
+    return string[11:11 + 6]
 
 
 def is_same_color(a, b) -> bool:
@@ -68,10 +70,12 @@ def convertcel(file_name: str):
             nwe_append_text = f'$[fg.color={rgba_to_hex(r, g,b,a)} ■]'
             # if new_cel and nwe_append_text == new_cel[len(new_cel) - 1]:
             if len(new_cel) > 0 and is_same_color(nwe_append_text, new_cel[len(new_cel) - 1]):
-                new_cel[len(new_cel) - 1] = new_cel[len(new_cel) -
-                                                    1].rstrip("]") + ' ■]'
+                new_txt = new_cel[len(new_cel) -
+                                  1][:-1] + ' ■]'
+                new_cel[len(new_cel) - 1] = new_txt
 
-                # new_cel.append('■]')
+                # # new_cel.append('')
+                # new_cel.append(nwe_append_text)
             else:
                 new_cel.append(nwe_append_text)
 
