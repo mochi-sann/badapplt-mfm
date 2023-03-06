@@ -1,5 +1,5 @@
 import os
-
+import re
 from PIL import Image
 
 
@@ -28,6 +28,29 @@ def resize_image(image_path, new_size):
         return resized_image
 
 
+def extract_numbers(string):
+    result = ""
+    for char in string:
+        if char.isdigit():
+            result += char
+    return result
+
+
+def extract_color(string):
+    match = re.search(r"fg\.color=(\w{6})", string)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+
+def is_same_color(a, b) -> bool:
+    if extract_color(a) == extract_color(b):
+        return True
+    else:
+        return False
+
+
 def convertcel(file_name: str):
     cels = []
     img = Image.open(file_name).convert('RGBA')
@@ -39,12 +62,19 @@ def convertcel(file_name: str):
         for x in range(width):
             # 画像から色データ取得
             r, g, b, a = imgdata[y_offset+x]
-            if a > 128:  # 透明はスキップ
 
-                # セルに設定
-                # print(f'$[fg.color={rgba_to_hex(r, g,b,a)} ■]', end="")
+            # セルに設定
+            # print(f'$[fg.color={rgba_to_hex(r, g,b,a)} ■]', end="")
+            nwe_append_text = f'$[fg.color={rgba_to_hex(r, g,b,a)} ■]'
+            # if new_cel and nwe_append_text == new_cel[len(new_cel) - 1]:
+            if len(new_cel) > 0 and is_same_color(nwe_append_text, new_cel[len(new_cel) - 1]):
+                new_cel[len(new_cel) - 1] = new_cel[len(new_cel) -
+                                                    1].rstrip("]") + ' ■]'
 
-                new_cel.append(f'$[fg.color={rgba_to_hex(r, g,b,a)} ■]')
+                # new_cel.append('■]')
+            else:
+                new_cel.append(nwe_append_text)
+
         cels.append(new_cel)
     return cels
 
@@ -90,10 +120,12 @@ def main() -> None:
         write_to_file("./files/txt/bad_apple-" +
                       convert_to_5digit(i) + ".txt", text)
 
-        print("write ./files/txt/bad_apple -" +
-              convert_to_5digit(i) + ".txt")
+        print("write ./files/txt/bad_apple-" +
+              convert_to_5digit(i) + ".txt  " + str(len(text)))
 
     # for file in file_list:
 
+
+main()
 
 main()
